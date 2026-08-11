@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "smb-accounting"
+version = "0.1.0"
+description = "Accounting Software for SMBs in India kirana shop"
+authors = ["kalaipuli"]
+package-mode = true
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "9.1.1"
+ruff = "0.16.1"
+mypy = "2.3.0"
+vulture = "2.16"
+pytest-cov = "7.1.0"
+
+[tool.poetry.scripts]
+smb-accounting = "src.main:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "C90"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
