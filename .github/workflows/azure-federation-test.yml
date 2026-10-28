@@ -1,0 +1,43 @@
+
+name: Azure Workload Identity Federation Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/azure-federation-test.yml"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  test-federation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Azure using OIDC
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Verify Azure authentication
+        run: |
+          az account show \
+            --query "{tenant:tenantId, subscription:id}" \
+            --output table
+
+      - name: Test resource-group read access
+        run: |
+          az group show \
+            --name "${{ vars.TEST_RESOURCE_GROUP }}" \
+            --subscription "${{ vars.AZURE_SUBSCRIPTION_ID }}" \
+            --query "{name:name, location:location}" \
+            --output table
